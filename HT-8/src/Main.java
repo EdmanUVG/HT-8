@@ -30,6 +30,8 @@ public class Main {
 	private JPanel panelResultados;
 	private JPanel pInicio;
 	
+	private String nombre = "Edman";
+	
 	private DefaultListModel ListaPacientes;
 	private JList list;
 
