@@ -1,5 +1,6 @@
-public interface PriorityQueue<E extends Comparable<E>>
-{
+
+public interface PriorityQueue<E extends Comparable<E>> {
+
 	public E getFirst();
 	// pre: !isEmpty()
 	// post: returns the minimum value in priority queue
@@ -20,4 +21,7 @@ public interface PriorityQueue<E extends Comparable<E>>
 	
 	public void clear();
 	// post: removes all elements from queue
+	
+	public PriorityQueue<E> clone();
+	
 }

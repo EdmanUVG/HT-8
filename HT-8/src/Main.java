@@ -1,6 +1,7 @@
 import java.awt.EventQueue;
 import java.awt.Image;
 
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -9,14 +10,22 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 
 public class Main {
 
@@ -30,10 +39,15 @@ public class Main {
 	private JPanel panelResultados;
 	private JPanel pInicio;
 	
-	private String nombre = "Edman";
+	private Controller controller;
 	
 	private DefaultListModel ListaPacientes;
 	private JList list;
+	private JPanel panel_1;
+	private JPanel panel;
+	private JRadioButton rdbPriorityQueue;
+	private JRadioButton rdbVectorHeap;
+	private JScrollPane scrollPane;
 
 	/**
 	 * Launch the application.
@@ -69,7 +83,69 @@ public class Main {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
-		JPanel panel = new JPanel();
+		panel_1 = new JPanel();
+		panel_1.setBackground(new Color(255, 255, 255));
+		frame.getContentPane().add(panel_1, "name_596031541153800");
+		panel_1.setLayout(null);
+		
+		JLabel lblNewLabel_3 = new JLabel("UVG Hospital");
+		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 20));
+		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_3.setBounds(0, 50, 884, 33);
+		panel_1.add(lblNewLabel_3);
+		
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(rdbVectorHeap);
+		bg.add(rdbPriorityQueue);
+		
+		rdbVectorHeap = new JRadioButton("Vector Heap");
+		rdbVectorHeap.setFont(new Font("Arial", Font.PLAIN, 12));
+		rdbVectorHeap.setBounds(392, 212, 109, 23);
+		panel_1.add(rdbVectorHeap);
+		
+		rdbPriorityQueue = new JRadioButton("Priority Queue");
+		rdbPriorityQueue.setFont(new Font("Arial", Font.PLAIN, 12));
+		rdbPriorityQueue.setBounds(392, 252, 109, 23);
+		panel_1.add(rdbPriorityQueue);
+		
+		JLabel lblNewLabel_4 = new JLabel("Elija el tipo de ADT");
+		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 15));
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_4.setBounds(0, 155, 884, 33);
+		panel_1.add(lblNewLabel_4);
+		
+		JButton btnContinuar = new JButton("Continuar");
+		btnContinuar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if (rdbVectorHeap.isSelected() || rdbPriorityQueue.isSelected()) {
+					if (rdbVectorHeap.isSelected()) {
+						controller = new Controller("VectorHeap");
+					}else if (rdbPriorityQueue.isSelected()) {
+						controller = new Controller("PriorityQueue");
+					}
+					
+					panel.setVisible(true);
+					panel_1.setVisible(false);
+					
+//					setTablaPacientes();
+//					setTablaPacienteActual();
+				}else {
+					JOptionPane.showMessageDialog(null, "No has seleccionado ninguno");
+				}
+				
+				panel_1.setVisible(false);
+				panel.setVisible(true);
+				
+			}
+		});
+		btnContinuar.setFont(new Font("Tahoma", Font.BOLD, 12));
+		btnContinuar.setForeground(new Color(255, 255, 255));
+		btnContinuar.setBackground(new Color(0, 153, 204));
+		btnContinuar.setBounds(375, 319, 150, 30);
+		panel_1.add(btnContinuar);
+		
+		panel = new JPanel();
 		panel.setBackground(Color.WHITE);
 		frame.getContentPane().add(panel, "name_176810167288600");
 		panel.setLayout(null);
@@ -109,8 +185,37 @@ public class Main {
 					lblError.setText("");
 					lblGuardadoExitosmante.setText("Guardado exitosmante");
 					
+					// Guardar paciente en archivo .txt
+					try {
+						BufferedWriter writer = new BufferedWriter( new FileWriter("src/pacientes.txt", true));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					
 					pInicio.setVisible(false);
 					panelResultados.setVisible(true);
+					
+					controller.addPacientes();
+					
+					
+					// Tabla del pacientes
+					
+					PriorityQueue<Paciente> data = controller.getPacientes();
+					DefaultTableModel model = new DefaultTableModel();
+					model.setColumnCount(3);
+					model.setColumnIdentifiers(new String[] {"Codigo", "Nombre", "Sintoma"});
+					model.setRowCount(controller.size());
+					int c = controller.size();
+					
+					System.out.println(controller.size());
+					
+					for (int i = 0; i < c;i++) {
+						Paciente pa = data.remove();
+						model.setValueAt(pa.getCodigo(), i, 0);
+						model.setValueAt(pa.getNombre(), i, 1);
+						model.setValueAt(pa.getSintoma(), i, 2);
+					}
+					scrollPane.setViewportView(new JTable(model));
 					
 				}
 			}
@@ -213,7 +318,7 @@ public class Main {
 		
 		ListaPacientes.addElement("Uno dso tress");
 		
-		JScrollPane scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 82, 434, 376);
 		panelResultados.add(scrollPane);
 		
