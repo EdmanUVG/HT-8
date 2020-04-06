@@ -55,6 +55,7 @@ public class Main {
 	private JButton btnMandarACola;
 	private JLabel lblADTError;
 	private JLabel label;
+	private DefaultTableModel pacienteTableModel;
 
 	/**
 	 * Launch the application.
@@ -144,7 +145,7 @@ public class Main {
 					pElegirADT.setVisible(false);
 					
 					controller.addPacientes();
-					setPacientes();
+					getPacientes();
 					
 				}else {
 					lblADTError.setText("No hay ADT seleccionado... Intentar de nuevo ");
@@ -226,10 +227,15 @@ public class Main {
 					tfSintoma.setText("");
 					lblError.setText("");
 					lblGuardadoExitosmante.setText("Guardado exitosmante");
-										
+					
+					// LIMPIA la lista vieja
+					pacienteTableModel = new DefaultTableModel();
+					pacienteTableModel.setRowCount(0);
+					scrollPacientes.setViewportView(new JTable(pacienteTableModel));
+					
 					// Agrega paciente a la lista de pacientes
 					controller.addPacientes();
-					setPacientes();
+					getPacientes();
 					
 				}
 			}
@@ -331,8 +337,8 @@ public class Main {
 				
 				if(controller.getPaciente() != null) {
 					controller.atender();
-					setPacienteActual();
-					setPacientes();
+					getPacienteActual();
+					getPacientes();
 					JOptionPane.showMessageDialog(null, "Paciente atendido exitosamente");
 				}else {
 					JOptionPane.showMessageDialog(null, "No hay paciente para atender");
@@ -359,8 +365,8 @@ public class Main {
 				if (controller.getPaciente() == null) {
 					try {
 						controller.transferir();
-						setPacienteActual();
-						setPacientes();
+						getPacienteActual();
+						getPacientes();
 					}catch(Exception ex) {}
 				}else {
 					JOptionPane.showMessageDialog(null, "Lista llena. Un paciente esta siendo atendido");
@@ -377,12 +383,12 @@ public class Main {
 		
 	}
 	
-	private void setPacienteActual() {
+	private void getPacienteActual() {
 		
 		// Tabla de paciente actual
 		
 		Paciente paciente = controller.getPaciente();
-		DefaultTableModel pacienteTableModel = new DefaultTableModel();
+		pacienteTableModel = new DefaultTableModel();
 		
 		pacienteTableModel.setColumnCount(3);
 		pacienteTableModel.setColumnIdentifiers(new String[] {"Codigo", "Nombre", "Sintoma"});
@@ -399,13 +405,13 @@ public class Main {
 		
 	}
 	
-	private void setPacientes() {
+	private void getPacientes() {
 		
-		// Tabla del pacientes
+		// Tabla de pacientes
 		
 		PriorityQueue<Paciente> dato = controller.getPacientes();
-		DefaultTableModel pacienteTableModel = new DefaultTableModel();
-				
+		pacienteTableModel = new DefaultTableModel();
+					
 		pacienteTableModel.setColumnCount(3);
 		pacienteTableModel.setColumnIdentifiers(new String[] {"Codigo", "Nombre", "Sintoma"});
 		pacienteTableModel.setRowCount(controller.size());

@@ -21,6 +21,7 @@ public class Controller {
 		}
 	}
 	
+	
 	/**
 	 * Metodo para transferir paciente
 	 */

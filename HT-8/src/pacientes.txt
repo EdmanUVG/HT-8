@@ -5,5 +5,4 @@ douglas barrios, tos, E
 alejandro guiamattei, fiebre, D
 jimmy morales, covid-19, A
 sandra torres, zica, B
-luis fernandez, loco, C
-omero simpson, gripe, E
+Hola, virus, A
