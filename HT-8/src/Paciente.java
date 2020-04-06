@@ -1,4 +1,10 @@
 
+/**
+ * 
+ * @author edman
+ *
+ */
+
 public class Paciente implements Comparable<Paciente>{
 
 	

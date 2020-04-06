@@ -1,5 +1,17 @@
 import java.util.Vector;
 
+
+/**
+ * 
+ * 
+ * @author edman
+ *
+ * @param <E>
+ * 
+ * extracted from canvas
+ */
+
+
 public class VectorHeap<E extends Comparable<E>> implements PriorityQueue<E>{
 
 	protected Vector<E> data;

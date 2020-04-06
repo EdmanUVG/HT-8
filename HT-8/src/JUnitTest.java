@@ -2,6 +2,11 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author edman
+ *
+ */
 public class JUnitTest {
 	
 	VectorHeap<Paciente> paciente = new VectorHeap<Paciente>();

@@ -1,4 +1,11 @@
 
+/**
+ * 
+ * @author edman
+ *
+ * @param <E>
+ */
+
 public class Factory<E extends Comparable<E>> {
 
 	public PriorityQueue<E> getPriority(String priority){

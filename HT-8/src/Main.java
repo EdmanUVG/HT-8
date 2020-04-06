@@ -56,6 +56,8 @@ public class Main {
 	private JLabel lblADTError;
 	private JLabel label;
 	private DefaultTableModel pacienteTableModel;
+	private JTable pacientesTable;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -229,9 +231,9 @@ public class Main {
 					lblGuardadoExitosmante.setText("Guardado exitosmante");
 					
 					// LIMPIA la lista vieja
-					pacienteTableModel = new DefaultTableModel();
-					pacienteTableModel.setRowCount(0);
-					scrollPacientes.setViewportView(new JTable(pacienteTableModel));
+//					pacienteTableModel = new DefaultTableModel();
+//					pacienteTableModel.setRowCount(0);
+//					scrollPacientes.setViewportView(pacientesTable);
 					
 					// Agrega paciente a la lista de pacientes
 					controller.addPacientes();
@@ -295,6 +297,10 @@ public class Main {
 		lblError.setFont(new Font("Arial", Font.BOLD, 14));
 		lblError.setBounds(0, 360, 450, 30);
 		pHospital.add(lblError);
+		
+		table = new JTable();
+		table.setBounds(70, 411, 50, 50);
+		pHospital.add(table);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBounds(450, 0, 534, 611);

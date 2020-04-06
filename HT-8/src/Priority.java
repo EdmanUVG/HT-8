@@ -1,4 +1,10 @@
 
+/**
+ * 
+ * @author edman
+ *
+ * @param <E>
+ */
 
 public class Priority<E extends Comparable<E>> implements PriorityQueue<E> {
 	
