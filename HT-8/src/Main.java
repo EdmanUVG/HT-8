@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
+import com.sun.javafx.sg.prism.NGShape.Mode;
+
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -26,6 +28,8 @@ import javax.swing.JTable;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
+import javax.swing.ListModel;
+import javax.swing.Icon;
 
 public class Main {
 
@@ -37,17 +41,20 @@ public class Main {
 	private JLabel lblGuardadoExitosmante;
 	private JLabel lblError;
 	private JPanel panelResultados;
-	private JPanel pInicio;
 	
 	private Controller controller;
 	
-	private DefaultListModel ListaPacientes;
-	private JList list;
-	private JPanel panel_1;
-	private JPanel panel;
+	private JPanel pElegirADT;
+	private JPanel panelHospital;
 	private JRadioButton rdbPriorityQueue;
 	private JRadioButton rdbVectorHeap;
-	private JScrollPane scrollPane;
+	private JScrollPane scrollPacientes;
+	private JComboBox boxEmergencia;
+	private JScrollPane scrollAAtender;
+	private JLabel lblAAtender;
+	private JButton btnMandarACola;
+	private JLabel lblADTError;
+	private JLabel label;
 
 	/**
 	 * Launch the application.
@@ -77,42 +84,50 @@ public class Main {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setSize(900, 550);
+		frame.setSize(1000, 650);
 		frame.setLocationRelativeTo(null);
 		frame.setIconImage(new ImageIcon(Main.class.getResource("resources/white.jpg")).getImage());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
 		
-		panel_1 = new JPanel();
-		panel_1.setBackground(new Color(255, 255, 255));
-		frame.getContentPane().add(panel_1, "name_596031541153800");
-		panel_1.setLayout(null);
+		// HOSPITAL LOGO
+		ImageIcon hospitalImage = new ImageIcon(Main.class.getResource("resources/hospital.png"));	
+		Image imageH = hospitalImage.getImage();
+		Image hispitalImg = imageH.getScaledInstance(50, 30, Image.SCALE_DEFAULT);
+		hospitalImage = new ImageIcon(hispitalImg);
+		
+		pElegirADT = new JPanel();
+		pElegirADT.setBackground(new Color(255, 255, 255));
+		frame.getContentPane().add(pElegirADT, "name_596031541153800");
+		pElegirADT.setLayout(null);
 		
 		JLabel lblNewLabel_3 = new JLabel("UVG Hospital");
 		lblNewLabel_3.setFont(new Font("Arial", Font.BOLD, 20));
 		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_3.setBounds(0, 50, 884, 33);
-		panel_1.add(lblNewLabel_3);
+		pElegirADT.add(lblNewLabel_3);
+		
+		
+		
+		rdbVectorHeap = new JRadioButton("Vector Heap", true);
+		rdbVectorHeap.setFont(new Font("Arial", Font.PLAIN, 12));
+		rdbVectorHeap.setBounds(392, 212, 109, 23);
+		pElegirADT.add(rdbVectorHeap);
+		
+		rdbPriorityQueue = new JRadioButton("Priority Queue");
+		rdbPriorityQueue.setFont(new Font("Arial", Font.PLAIN, 12));
+		rdbPriorityQueue.setBounds(392, 252, 109, 23);
+		pElegirADT.add(rdbPriorityQueue);
 		
 		ButtonGroup bg = new ButtonGroup();
 		bg.add(rdbVectorHeap);
 		bg.add(rdbPriorityQueue);
 		
-		rdbVectorHeap = new JRadioButton("Vector Heap");
-		rdbVectorHeap.setFont(new Font("Arial", Font.PLAIN, 12));
-		rdbVectorHeap.setBounds(392, 212, 109, 23);
-		panel_1.add(rdbVectorHeap);
-		
-		rdbPriorityQueue = new JRadioButton("Priority Queue");
-		rdbPriorityQueue.setFont(new Font("Arial", Font.PLAIN, 12));
-		rdbPriorityQueue.setBounds(392, 252, 109, 23);
-		panel_1.add(rdbPriorityQueue);
-		
-		JLabel lblNewLabel_4 = new JLabel("Elija el tipo de ADT");
+		JLabel lblNewLabel_4 = new JLabel("Elegir el tipo de ADT");
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, 15));
 		lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewLabel_4.setBounds(0, 155, 884, 33);
-		panel_1.add(lblNewLabel_4);
+		pElegirADT.add(lblNewLabel_4);
 		
 		JButton btnContinuar = new JButton("Continuar");
 		btnContinuar.addActionListener(new ActionListener() {
@@ -125,35 +140,43 @@ public class Main {
 						controller = new Controller("PriorityQueue");
 					}
 					
-					panel.setVisible(true);
-					panel_1.setVisible(false);
+					panelHospital.setVisible(true);
+					pElegirADT.setVisible(false);
 					
-//					setTablaPacientes();
-//					setTablaPacienteActual();
+					controller.addPacientes();
+					setPacientes();
+					
 				}else {
-					JOptionPane.showMessageDialog(null, "No has seleccionado ninguno");
+					lblADTError.setText("No hay ADT seleccionado... Intentar de nuevo ");
 				}
-				
-				panel_1.setVisible(false);
-				panel.setVisible(true);
-				
 			}
 		});
 		btnContinuar.setFont(new Font("Tahoma", Font.BOLD, 12));
 		btnContinuar.setForeground(new Color(255, 255, 255));
 		btnContinuar.setBackground(new Color(0, 153, 204));
 		btnContinuar.setBounds(375, 319, 150, 30);
-		panel_1.add(btnContinuar);
+		pElegirADT.add(btnContinuar);
 		
-		panel = new JPanel();
-		panel.setBackground(Color.WHITE);
-		frame.getContentPane().add(panel, "name_176810167288600");
-		panel.setLayout(null);
+		lblADTError = new JLabel("");
+		lblADTError.setForeground(new Color(255, 51, 102));
+		lblADTError.setFont(new Font("Tahoma", Font.BOLD, 13));
+		lblADTError.setHorizontalAlignment(SwingConstants.CENTER);
+		lblADTError.setBounds(0, 365, 884, 30);
+		pElegirADT.add(lblADTError);
+		
+		label = new JLabel("", hospitalImage, JLabel.CENTER);
+		label.setBounds(0, 0, 90, 60);
+		pElegirADT.add(label);
+		
+		panelHospital = new JPanel();
+		panelHospital.setBackground(Color.WHITE);
+		frame.getContentPane().add(panelHospital, "name_176810167288600");
+		panelHospital.setLayout(null);
 		
 		pHospital = new JPanel();
 		pHospital.setBackground(Color.WHITE);
 		pHospital.setBounds(0, 0, 450, 511);
-		panel.add(pHospital);
+		panelHospital.add(pHospital);
 		pHospital.setLayout(null);
 		
 		JLabel lblNewLabel = new JLabel("Hospital UVG");
@@ -180,42 +203,33 @@ public class Main {
 					lblError.setText("Algun campo vacio!");
 					lblGuardadoExitosmante.setText("");
 				} else {
-					tfNombre.setText("");
-					tfSintoma.setText("");
-					lblError.setText("");
-					lblGuardadoExitosmante.setText("Guardado exitosmante");
+					
+					String paciente = "";
+					
+					paciente = tfNombre.getText().toString() + ", " + tfSintoma.getText().toString() 
+					+ ", " + boxEmergencia.getSelectedItem();
 					
 					// Guardar paciente en archivo .txt
 					try {
 						BufferedWriter writer = new BufferedWriter( new FileWriter("src/pacientes.txt", true));
+						
+						writer.newLine();   //Add new line
+					    writer.write(paciente);
+					    writer.close();
+					    
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
 					
-					pInicio.setVisible(false);
-					panelResultados.setVisible(true);
-					
+					// LIMPIAR las entradas de texto
+					tfNombre.setText("");
+					tfSintoma.setText("");
+					lblError.setText("");
+					lblGuardadoExitosmante.setText("Guardado exitosmante");
+										
+					// Agrega paciente a la lista de pacientes
 					controller.addPacientes();
-					
-					
-					// Tabla del pacientes
-					
-					PriorityQueue<Paciente> data = controller.getPacientes();
-					DefaultTableModel model = new DefaultTableModel();
-					model.setColumnCount(3);
-					model.setColumnIdentifiers(new String[] {"Codigo", "Nombre", "Sintoma"});
-					model.setRowCount(controller.size());
-					int c = controller.size();
-					
-					System.out.println(controller.size());
-					
-					for (int i = 0; i < c;i++) {
-						Paciente pa = data.remove();
-						model.setValueAt(pa.getCodigo(), i, 0);
-						model.setValueAt(pa.getNombre(), i, 1);
-						model.setValueAt(pa.getSintoma(), i, 2);
-					}
-					scrollPane.setViewportView(new JTable(model));
+					setPacientes();
 					
 				}
 			}
@@ -227,17 +241,10 @@ public class Main {
 		btnGuardar.setBounds(150, 310, 150, 30);
 		pHospital.add(btnGuardar);
 		
-//		lblGuardadoExitosmante.setText("");
-//		lblError.setText("");
 		
 		
-		// HOSPITAL LOGO
-		ImageIcon hispitalImage = new ImageIcon(Main.class.getResource("resources/hospital.png"));	
-		Image imageH = hispitalImage.getImage();
-		Image hispitalImg = imageH.getScaledInstance(50, 30, Image.SCALE_DEFAULT);
-		hispitalImage = new ImageIcon(hispitalImg);
 		
-		JLabel lblHospital = new JLabel("", hispitalImage, JLabel.CENTER);
+		JLabel lblHospital = new JLabel("", hospitalImage, JLabel.CENTER);
 		lblHospital.setHorizontalAlignment(SwingConstants.CENTER);
 		lblHospital.setBounds(0, 0, 90, 60);
 		pHospital.add(lblHospital);
@@ -260,14 +267,14 @@ public class Main {
 		lblEmergencia.setBounds(16, 260, 100, 30);
 		pHospital.add(lblEmergencia);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(126, 260, 200, 30);
-		comboBox.addItem("A");
-		comboBox.addItem("B");
-		comboBox.addItem("C");
-		comboBox.addItem("D");
-		comboBox.addItem("E");
-		pHospital.add(comboBox);
+		boxEmergencia = new JComboBox();
+		boxEmergencia.setBounds(126, 260, 200, 30);
+		boxEmergencia.addItem("A");
+		boxEmergencia.addItem("B");
+		boxEmergencia.addItem("C");
+		boxEmergencia.addItem("D");
+		boxEmergencia.addItem("E");
+		pHospital.add(boxEmergencia);
 		
 		lblGuardadoExitosmante = new JLabel("");
 		lblGuardadoExitosmante.setForeground(new Color(0, 153, 102));
@@ -284,8 +291,8 @@ public class Main {
 		pHospital.add(lblError);
 		
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(450, 0, 434, 511);
-		panel.add(panel_2);
+		panel_2.setBounds(450, 0, 534, 611);
+		panelHospital.add(panel_2);
 		panel_2.setLayout(new CardLayout(0, 0));
 		
 		// UVG LOGO
@@ -294,47 +301,139 @@ public class Main {
 		Image userImg = image.getScaledInstance(400, 200, Image.SCALE_DEFAULT);
 		uvgImage = new ImageIcon(userImg);
 		
-		pInicio = new JPanel();
-		pInicio.setBackground(new Color(251, 251, 251));
-		panel_2.add(pInicio, "name_176945063737700");
-		pInicio.setLayout(null);
-		
-		JLabel lblUVG = new JLabel("", uvgImage, JLabel.CENTER);
-		lblUVG.setBounds(146, 163, 150, 170);
-		pInicio.add(lblUVG);
-		
 		panelResultados = new JPanel();
 		panelResultados.setBackground(new Color(251, 251, 251));
 		panel_2.add(panelResultados, "name_553788472686300");
 		panelResultados.setLayout(null);
 		
-		JLabel lblNewLabel_2 = new JLabel("Pacientes en cola");
-		lblNewLabel_2.setFont(new Font("Arial", Font.PLAIN, 15));
+		JLabel lblNewLabel_2 = new JLabel("Pacientes");
+		lblNewLabel_2.setFont(new Font("Arial", Font.PLAIN, 16));
 		lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_2.setBounds(0, 25, 434, 30);
+		lblNewLabel_2.setBounds(0, 25, 534, 30);
 		panelResultados.add(lblNewLabel_2);
 		
-		ListaPacientes = new DefaultListModel();
+		// Scroll
+		scrollAAtender = new JScrollPane();
+		scrollAAtender.setBounds(82, 477, 352, 50);
+		panelResultados.add(scrollAAtender);
 		
-		ListaPacientes.addElement("Uno dso tress");
+
+		// Scroll
+		scrollPacientes = new JScrollPane();
+		scrollPacientes.setBounds(0, 109, 534, 307);
+		panelResultados.add(scrollPacientes);
+
 		
-		scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 82, 434, 376);
-		panelResultados.add(scrollPane);
-		
-		list = new JList(ListaPacientes);
-		list.setBounds(0, 0, 550, 641);
-		
-		scrollPane.setViewportView(list);
-		
+		// Button Paciente a atender
 		JButton btnAtentederPaciente = new JButton("Atender paciente");
+		btnAtentederPaciente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if(controller.getPaciente() != null) {
+					controller.atender();
+					setPacienteActual();
+					setPacientes();
+					JOptionPane.showMessageDialog(null, "Paciente atendido exitosamente");
+				}else {
+					JOptionPane.showMessageDialog(null, "No hay paciente para atender");
+				}
+			}
+		});
 		btnAtentederPaciente.setForeground(Color.WHITE);
 		btnAtentederPaciente.setFont(new Font("Arial", Font.BOLD, 12));
 		btnAtentederPaciente.setBorder(null);
 		btnAtentederPaciente.setBackground(new Color(0, 153, 204));
-		btnAtentederPaciente.setBounds(120, 469, 200, 30);
+		btnAtentederPaciente.setBounds(155, 533, 200, 30);
 		panelResultados.add(btnAtentederPaciente);
+		
+		lblAAtender = new JLabel("A atender:");
+		lblAAtender.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAAtender.setFont(new Font("Arial", Font.PLAIN, 15));
+		lblAAtender.setBounds(0, 487, 77, 30);
+		panelResultados.add(lblAAtender);
+		
+		btnMandarACola = new JButton("Mandar a cola");
+		btnMandarACola.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				if (controller.getPaciente() == null) {
+					try {
+						controller.transferir();
+						setPacienteActual();
+						setPacientes();
+					}catch(Exception ex) {}
+				}else {
+					JOptionPane.showMessageDialog(null, "Lista llena. Un paciente esta siendo atendido");
+				}
+			}
+		});
+		btnMandarACola.setForeground(Color.WHITE);
+		btnMandarACola.setFont(new Font("Arial", Font.BOLD, 12));
+		btnMandarACola.setBorder(null);
+		btnMandarACola.setBackground(new Color(0, 153, 204));
+		btnMandarACola.setBounds(334, 79, 200, 30);
+		panelResultados.add(btnMandarACola);
 		
 		
 	}
+	
+	private void setPacienteActual() {
+		
+		// Tabla de paciente actual
+		
+		Paciente paciente = controller.getPaciente();
+		DefaultTableModel pacienteTableModel = new DefaultTableModel();
+		
+		pacienteTableModel.setColumnCount(3);
+		pacienteTableModel.setColumnIdentifiers(new String[] {"Codigo", "Nombre", "Sintoma"});
+		pacienteTableModel.setRowCount(0);
+		
+		if (controller.getPaciente() != null) {
+			pacienteTableModel.setRowCount(1);
+			pacienteTableModel.setValueAt(paciente.getCodigo(), 0, 0);
+			pacienteTableModel.setValueAt(paciente.getNombre(), 0, 1);
+			pacienteTableModel.setValueAt(paciente.getSintoma(), 0, 2);
+		}
+		
+		scrollAAtender.setViewportView(new JTable(pacienteTableModel));
+		
+	}
+	
+	private void setPacientes() {
+		
+		// Tabla del pacientes
+		
+		PriorityQueue<Paciente> dato = controller.getPacientes();
+		DefaultTableModel pacienteTableModel = new DefaultTableModel();
+				
+		pacienteTableModel.setColumnCount(3);
+		pacienteTableModel.setColumnIdentifiers(new String[] {"Codigo", "Nombre", "Sintoma"});
+		pacienteTableModel.setRowCount(controller.size());
+		
+		int control = controller.size();
+		
+		for (int i = 0; i < control; i++) {
+			Paciente paciente = dato.remove();
+			pacienteTableModel.setValueAt(paciente.getCodigo(), i, 0);
+			pacienteTableModel.setValueAt(paciente.getNombre(), i, 1);
+			pacienteTableModel.setValueAt(paciente.getSintoma(), i, 2);
+		}
+		
+		scrollPacientes.setViewportView(new JTable(pacienteTableModel));
+		
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

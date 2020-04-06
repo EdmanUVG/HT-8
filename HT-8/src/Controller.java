@@ -15,12 +15,18 @@ public class Controller {
 	 * Metodo para agregar pacientes
 	 */
 	public void addPacientes() {
-		Object[] data = ArchivoTXT.leerTXT();
+		Object[] data = Leer.leer();
 		for (Object a : data) {
 			this.data.add(((Paciente)a));
 		}
 	}
 	
+	/**
+	 * Metodo para transferir paciente
+	 */
+	public void transferir() {
+		PacienteActual = data.remove();
+	}
 
 	
 	/**

@@ -1,22 +1,13 @@
 
+public class Paciente implements Comparable<Paciente>{
 
-public class Paciente implements Comparable<Paciente> {
 	
 	private String nombre;
 	private String sintoma;
 	private String codigo;
 	
-	public Paciente() {
-		nombre = "";
-		sintoma = "";
-		codigo = "";
-	}
-
-	/**
-	 * @param nombre
-	 * @param sintoma
-	 * @param codigo
-	 */
+	
+	
 	public Paciente(String nombre, String sintoma, String codigo) {
 		super();
 		this.nombre = nombre;
@@ -31,12 +22,15 @@ public class Paciente implements Comparable<Paciente> {
 		return nombre;
 	}
 
+
 	/**
 	 * @param nombre the nombre to set
 	 */
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+
+
 
 	/**
 	 * @return the sintoma
@@ -59,6 +53,7 @@ public class Paciente implements Comparable<Paciente> {
 		return codigo;
 	}
 
+
 	/**
 	 * @param codigo the codigo to set
 	 */
@@ -66,14 +61,11 @@ public class Paciente implements Comparable<Paciente> {
 		this.codigo = codigo;
 	}
 
-	
 	@Override
 	public int compareTo(Paciente o) {
-		// TODO Auto-generated method stub
-		return codigo.compareTo(o.toString());
+		return this.codigo.compareTo(o.getCodigo());
 	}
 
-	
 	@Override
 	public String toString() {
 		return "Codigo: " + codigo + "\nNombre: " + nombre + "\nSintoma: " + sintoma;
